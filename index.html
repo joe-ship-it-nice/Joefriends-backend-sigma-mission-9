@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Joefriends API documentation for authentication, posts, and friendships." />
+    <title>Joefriends API Documentation</title>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            color: #e7edf8;
+            background: #080c17;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            line-height: 1.7;
+            background:
+                radial-gradient(ellipse at top left, #163b4b70, transparent 45%),
+                radial-gradient(ellipse at top right, #38245260, transparent 45%),
+                #080c17;
+        }
+
+        a {
+            color: #8de8f3;
+            text-underline-offset: 4px;
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 32px));
+            margin: auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 24px 0;
+            border-bottom: 1px solid #29364c;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .tag,
+        .eyebrow {
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        .tag,
+        .muted {
+            color: #a7b6cc;
+        }
+
+        .eyebrow {
+            color: #8de8f3;
+            font-weight: 700;
+        }
+
+        .hero {
+            padding: 64px 0 48px;
+        }
+
+        h1 {
+            margin: 16px 0 24px;
+            font-size: clamp(40px, 7vw, 72px);
+            line-height: 1.1;
+            letter-spacing: -2px;
+        }
+
+        h1 span {
+            color: #8de8f3;
+        }
+
+        .hero p {
+            max-width: 680px;
+            color: #a7b6cc;
+            font-size: 18px;
+        }
+
+        .actions,
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 18px;
+            color: #e7edf8;
+            background: #1b293e;
+            border: 1px solid #344660;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            border-color: #8de8f3;
+        }
+
+        .button.primary {
+            color: #081321;
+            background: #8de8f3;
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            color: #a7b6cc;
+            border: 1px solid #29364c;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 180px minmax(0, 1fr);
+            gap: 28px;
+            padding-bottom: 48px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 24px;
+            align-self: start;
+            display: grid;
+            gap: 6px;
+        }
+
+        .sidebar a {
+            padding: 9px 12px;
+            color: #a7b6cc;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover {
+            color: #8de8f3;
+            background: #101827;
+        }
+
+        main {
+            min-width: 0;
+        }
+
+        .card {
+            margin-bottom: 22px;
+            padding: 28px;
+            background: #101827;
+            border: 1px solid #29364c;
+            border-radius: 18px;
+            scroll-margin-top: 24px;
+        }
+
+        h2 {
+            margin: 0 0 16px;
+            font-size: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        code {
+            color: #bcf1f5;
+            font-family: Consolas, monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            padding: 18px;
+            overflow: auto;
+            background: #080e1b;
+            border: 1px solid #29364c;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        pre code {
+            font-size: inherit;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #29364c;
+            vertical-align: top;
+        }
+
+        th {
+            color: #a7b6cc;
+            background: #142033;
+        }
+
+        .method {
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        .get {
+            color: #8de8f3;
+        }
+
+        .post {
+            color: #b5a6ff;
+        }
+
+        .patch {
+            color: #ffd796;
+        }
+
+        .notice {
+            padding: 14px 18px;
+            background: #1a2036;
+            border-left: 3px solid #b5a6ff;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .base-url {
+            display: block;
+            padding: 16px;
+            overflow-wrap: anywhere;
+            background: #080e1b;
+            border-radius: 10px;
+        }
+
+        details {
+            padding: 16px 0;
+            border-top: 1px solid #29364c;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        summary code {
+            margin-left: 8px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        #preview-output {
+            max-height: 360px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            padding: 24px 0 40px;
+            color: #a7b6cc;
+            border-top: 1px solid #29364c;
+            font-size: 13px;
+        }
+
+        @media (max-width: 760px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .hero {
+                padding: 40px 0 30px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="topbar">
+            <a class="brand" href="/">Joefriends / API</a>
+            <span class="tag">Done by Joe, for all Joes</span>
+        </header>
+
+        <div class="hero">
+            <span class="eyebrow">REAL CONNECTIONS. CLEAR PERMISSIONS.</span>
+
+            <h1>
+                Welcome to the<br />
+                <span>backend zone.</span>
+            </h1>
+
+            <p>
+                The API behind Joefriends. Create an account, share your thoughts,
+                and connect with Joe, Joe, Joe and Joe.
+            </p>
+
+            <div class="actions">
+                <a class="button primary" href="#endpoints">Explore endpoints ↓</a>
+            </div>
+
+            <div class="badges">
+                <span class="badge">Node.js + Express</span>
+                <span class="badge">Supabase Auth</span>
+                <span class="badge">PostgreSQL + RLS</span>
+            </div>
+        </div>
+
+        <div class="layout">
+            <nav class="sidebar" aria-label="Documentation sections">
+                <a href="#getting-started">Getting started</a>
+                <a href="#authentication">Authentication</a>
+                <a href="#endpoints">Endpoints</a>
+                <a href="#examples">Request examples</a>
+                <a href="#privacy">Privacy rules</a>
+                <a href="#database">Database</a>
+                <a href="#errors">Errors</a>
+                <a href="#preview">Public posts</a>
+                <a href="#testing">Testing guide</a>
+            </nav>
+
+            <main>
+                <section class="card" id="getting-started">
+                    <h2>Getting started</h2>
+
+                    <p>Add an endpoint path to this backend's base URL:</p>
+                    <code class="base-url" id="base-url">http://localhost:3000</code>
+
+                    <p>
+                        Locally, run <code>npm run dev</code> inside the backend folder.
+                        The default port is <code>3000</code>.
+                    </p>
+
+                    <p>
+                        In Postman, choose the method and enter the full request URL.
+                        For JSON request bodies, select <strong>Body → raw → JSON</strong>.
+                    </p>
+
+                    <pre><code>Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN</code></pre>
+
+                    <p class="muted">
+                        Public GET requests do not require a token.
+                        Use Postman or the frontend for protected requests and
+                        POST/PATCH requests.
+                    </p>
+                </section>
+
+                <section class="card" id="authentication">
+                    <h2>Authentication</h2>
+
+                    <ol>
+                        <li>Create an account using <code>POST /signup</code>.</li>
+                        <li>If email confirmation is enabled, confirm your email.</li>
+                        <li>Log in using <code>POST /login</code>.</li>
+                        <li>Copy the returned <code>token</code>.</li>
+                        <li>
+                            In Postman, choose <strong>Authorization → Bearer Token</strong>
+                            and paste the token.
+                        </li>
+                    </ol>
+
+                    <div class="notice">
+                        To send a request from Joe to JoeOnn, use Joe's token and
+                        JoeOnn's user ID. To accept it, use JoeOnn's token and the
+                        friendship row ID.
+                    </div>
+
+                    <p>
+                        The backend verifies tokens using Supabase Auth.
+                        The authenticated user's ID determines the post author
+                        and friend-request sender.
+                    </p>
+
+                    <p class="muted">
+                        Signup returns a message. Login returns the access token.
+                        The frontend removes its stored token on logout.
+                        An expired token requires another login.
+                    </p>
+                </section>
+
+                <section class="card" id="endpoints">
+                    <h2>API endpoints</h2>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Path</th>
+                                    <th>Purpose</th>
+                                    <th>Token</th>
+                                    <th>Success</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="method get">GET</td>
+                                    <td><code>/</code></td>
+                                    <td>Documentation homepage</td>
+                                    <td>No</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td class="method post">POST</td>
+                                    <td><code>/signup</code></td>
+                                    <td>Create an account</td>
+                                    <td>No</td>
+                                    <td>201</td>
+                                </tr>
+                                <tr>
+                                    <td class="method post">POST</td>
+                                    <td><code>/login</code></td>
+                                    <td>Log in and receive a token</td>
+                                    <td>No</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td class="method get">GET</td>
+                                    <td><code>/profile</code></td>
+                                    <td>Current user ID and welcome message</td>
+                                    <td>Required</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td class="method get">GET</td>
+                                    <td><code>/users</code></td>
+                                    <td>List other users</td>
+                                    <td>Required</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td class="method get">GET</td>
+                                    <td><code>/posts</code></td>
+                                    <td>Read posts permitted for the viewer</td>
+                                    <td>Optional</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td class="method post">POST</td>
+                                    <td><code>/posts</code></td>
+                                    <td>Create a post</td>
+                                    <td>Required</td>
+                                    <td>201</td>
+                                </tr>
+                                <tr>
+                                    <td class="method get">GET</td>
+                                    <td><code>/friends</code></td>
+                                    <td>List your friendship records</td>
+                                    <td>Required</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td class="method post">POST</td>
+                                    <td><code>/friends</code></td>
+                                    <td>Send a friend request</td>
+                                    <td>Required</td>
+                                    <td>201</td>
+                                </tr>
+                                <tr>
+                                    <td class="method patch">PATCH</td>
+                                    <td><code>/friends/:id/accept</code></td>
+                                    <td>Accept an incoming request</td>
+                                    <td>Required</td>
+                                    <td>200</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="card" id="examples">
+                    <h2>Request examples</h2>
+                    <p class="muted">Select an endpoint to expand its instructions.</p>
+
+                    <details open>
+                        <summary>
+                            <span class="method post">POST</span>
+                            <code>/signup</code>
+                        </summary>
+
+                        <pre><code>{
+  "email": "joe@example.com",
+  "password": "YourStrongPassword123!",
+  "username": "Joe"
+}</code></pre>
+
+                        <p>
+                            Use your own email address. Username must contain 3–30
+                            characters and the password must contain at least 8 characters.
+                        </p>
+                        <p>
+                            Returns <code>201</code> with a message.
+                            If email confirmation is enabled, confirm before logging in.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method post">POST</span>
+                            <code>/login</code>
+                        </summary>
+
+                        <pre><code>{
+  "email": "joe@example.com",
+  "password": "YourStrongPassword123!"
+}</code></pre>
+
+                        <p>Successful response structure:</p>
+
+                        <pre><code>{
+  "token": "YOUR_ACCESS_TOKEN",
+  "user": {
+    "id": "YOUR_USER_UUID",
+    "email": "joe@example.com"
+  }
+}</code></pre>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method get">GET</span>
+                            <code>/profile</code>
+                        </summary>
+
+                        <p>Include your Bearer token. No request body is required.</p>
+
+                        <pre><code>{
+  "message": "Welcome to Joefriends, joe@example.com!",
+  "userId": "YOUR_USER_UUID"
+}</code></pre>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method get">GET</span>
+                            <code>/users</code>
+                        </summary>
+
+                        <p>
+                            Include your Bearer token. Returns other users' IDs and
+                            usernames, excluding the logged-in user.
+                        </p>
+
+                        <pre><code>[
+  {
+    "id": "RECIPIENT_UUID",
+    "username": "JoeOnn"
+  }
+]</code></pre>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method post">POST</span>
+                            <code>/posts</code>
+                        </summary>
+
+                        <p>Include your Bearer token and a JSON body:</p>
+
+                        <pre><code>{
+  "title": "Welcome to Joefriends",
+  "content": "This is my first public post!",
+  "visibility": "public"
+}</code></pre>
+
+                        <ul>
+                            <li>Title: required, maximum 200 characters.</li>
+                            <li>Content: required, maximum 5,000 characters.</li>
+                            <li>Visibility: <code>public</code> or <code>friends</code>.</li>
+                        </ul>
+
+                        <p>
+                            Returns <code>201</code> with the inserted post.
+                            The backend assigns the author from the token.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method get">GET</span>
+                            <code>/posts</code>
+                        </summary>
+
+                        <p>
+                            Without a token, returns public posts only. With a valid
+                            token, also includes your own and accepted friends'
+                            friends-only posts.
+                        </p>
+
+                        <pre><code>[
+  {
+    "id": 1,
+    "user_id": "AUTHOR_UUID",
+    "title": "Welcome to Joefriends",
+    "content": "This is my first public post!",
+    "visibility": "public",
+    "created_at": "2026-10-03T12:56:12.87135+00:00",
+    "author": "Joe"
+  }
+]</code></pre>
+
+                        <p>
+                            Posts are returned newest first.
+                            An empty result is <code>[]</code>.
+                            An invalid supplied token returns <code>401</code>.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method post">POST</span>
+                            <code>/friends</code>
+                        </summary>
+
+                        <pre><code>{
+  "friend_id": "RECIPIENT_UUID"
+}</code></pre>
+
+                        <p>
+                            Use the sender's Bearer token and an actual recipient UUID
+                            from <code>GET /users</code>.
+                        </p>
+                        <p>
+                            Returns <code>201</code> with a <code>message</code> and
+                            <code>friendship</code> object. Its initial status is
+                            <code>pending</code>.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method get">GET</span>
+                            <code>/friends</code>
+                        </summary>
+
+                        <p>
+                            Include your Bearer token. Returns your incoming and outgoing
+                            friendship records, including accepted friendships.
+                        </p>
+                        <p>
+                            Each record contains <code>id</code>, <code>user_id</code>,
+                            <code>friend_id</code>, <code>status</code>, and
+                            <code>created_at</code>.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>
+                            <span class="method patch">PATCH</span>
+                            <code>/friends/:id/accept</code>
+                        </summary>
+
+                        <pre><code>PATCH /friends/1/accept
+Authorization: Bearer RECIPIENT_ACCESS_TOKEN</code></pre>
+
+                        <p>
+                            No body is required. Replace <code>1</code> with the numeric
+                            friendship row ID, not a user's UUID.
+                        </p>
+                        <p>
+                            Only the recipient can accept a pending request.
+                            Success returns <code>200</code>, a confirmation
+                            <code>message</code>, and the updated <code>friendship</code>
+                            with status <code>accepted</code>.
+                        </p>
+                    </details>
+                </section>
+
+                <section class="card" id="privacy">
+                    <h2>Privacy rules</h2>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Viewer</th>
+                                    <th>Public post</th>
+                                    <th>Author's friends-only post</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Anonymous visitor</td>
+                                    <td>Visible</td>
+                                    <td>Hidden</td>
+                                </tr>
+                                <tr>
+                                    <td>Logged-in non-friend</td>
+                                    <td>Visible</td>
+                                    <td>Hidden</td>
+                                </tr>
+                                <tr>
+                                    <td>Pending friend</td>
+                                    <td>Visible</td>
+                                    <td>Hidden</td>
+                                </tr>
+                                <tr>
+                                    <td>Accepted friend</td>
+                                    <td>Visible</td>
+                                    <td>Visible</td>
+                                </tr>
+                                <tr>
+                                    <td>Post author</td>
+                                    <td>Visible</td>
+                                    <td>Visible</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        Express verifies authentication. Supabase Row Level Security
+                        controls database access using the user's token.
+                    </p>
+                    <p class="muted">
+                        Public posts are available anonymously through the API,
+                        although the React frontend's Feed page requires login.
+                    </p>
+                </section>
+
+                <section class="card" id="database">
+                    <h2>Database relationships</h2>
+
+                    <ul>
+                        <li>
+                            <code>public.users.id</code> references
+                            <code>auth.users.id</code>.
+                        </li>
+                        <li>A trigger creates the public profile after signup.</li>
+                        <li>
+                            <code>posts.user_id</code> references the author's public profile.
+                        </li>
+                        <li>
+                            <code>friendships.user_id</code> is the sender;
+                            <code>friend_id</code> is the recipient.
+                            Both reference public user profiles.
+                        </li>
+                        <li>
+                            A unique unordered pair prevents duplicate and reversed
+                            friendship records.
+                        </li>
+                        <li>Accepted friendships work in both directions.</li>
+                    </ul>
+
+                    <p>
+                        Passwords are handled by Supabase Auth and are not stored
+                        in the public profiles table.
+                    </p>
+                </section>
+
+                <section class="card" id="errors">
+                    <h2>Error responses</h2>
+                    <p>Errors return a JSON message, for example:</p>
+
+                    <pre><code>{
+  "message": "A Bearer token is required."
+}</code></pre>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Meaning</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>400</td>
+                                    <td>Invalid input, self-friend request, or malformed JSON</td>
+                                </tr>
+                                <tr>
+                                    <td>401</td>
+                                    <td>Missing, invalid, or expired token; unsuccessful login</td>
+                                </tr>
+                                <tr>
+                                    <td>404</td>
+                                    <td>
+                                        Unknown route, nonexistent recipient, or no matching
+                                        pending request addressed to you
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>409</td>
+                                    <td>Friendship pair already exists</td>
+                                </tr>
+                                <tr>
+                                    <td>413</td>
+                                    <td>Request body exceeds the configured limit</td>
+                                </tr>
+                                <tr>
+                                    <td>500</td>
+                                    <td>Unexpected server or database error</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="card" id="preview">
+                    <h2>Public posts response example</h2>
+
+                    <p>
+                        Example JSON returned by <code>GET /posts</code> without a Bearer token.
+                        This is a saved example, not live data.
+                    </p>
+
+                    <p>HTTP 200 — 3 public post(s) loaded.</p>
+
+                    <pre><code>[
+  {
+    "id": 4,
+    "user_id": "d1444d1d-4246-471d-b41f-14e63dd167c4",
+    "title": "Good morning",
+    "content": "It's a joelly great day to be a Joe today.",
+    "visibility": "public",
+    "created_at": "2026-10-03T23:50:30.260327+00:00",
+    "author": "Joeri"
+  },
+  {
+    "id": 3,
+    "user_id": "4774832d-0a77-451c-9420-28d7bcd7cb72",
+    "title": "Hello from Joel",
+    "content": "Happy to join Joefriends!",
+    "visibility": "public",
+    "created_at": "2026-10-03T13:31:26.114455+00:00",
+    "author": "Joel"
+  },
+  {
+    "id": 1,
+    "user_id": "0c655496-8d54-4bbe-a7a6-6a06ba35b642",
+    "title": "Welcome to Joefriends",
+    "content": "This is my first public post!",
+    "visibility": "public",
+    "created_at": "2026-10-03T12:56:12.87135+00:00",
+    "author": "Joe"
+  }
+]</code></pre>
+                </section>
+
+                <section class="card" id="testing">
+                    <h2>Testing guide</h2>
+
+                    <ol>
+                        <li>Create a friends-only post as user A.</li>
+                        <li>
+                            Read posts as unrelated user B.
+                            The friends-only post should be hidden.
+                        </li>
+                        <li>
+                            Send a friend request. While it is pending,
+                            the post should remain hidden.
+                        </li>
+                        <li>
+                            Attempt to accept it using the sender's token.
+                            The request should be rejected.
+                        </li>
+                        <li>
+                            Accept it using the recipient's token.
+                            The private post should now be visible to the accepted friend.
+                        </li>
+                        <li>
+                            Test missing tokens, invalid visibility, blank posts,
+                            self-friend requests, and duplicate requests.
+                        </li>
+                    </ol>
+
+                    <p class="muted">
+                        Check the HTTP responses and database state.
+                        Repeat these checks after deployment.
+                    </p>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            Joefriends · Lim Joe Onn <br />
+            Authentication, authorization, and a little more Joe.
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById("base-url").textContent =
+            window.location.protocol === "file:"
+                ? "http://localhost:3000"
+                : window.location.origin;
+    </script>
+</body>
+
+</html>

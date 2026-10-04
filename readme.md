@@ -14,9 +14,9 @@ posts, and send and accept friend requests.
 
 ## Links
 
-- Backend and API documentation: TODO — add Vercel backend URL
-- Frontend: TODO — add frontend URL
-- Frontend repository: TODO — add GitHub URL
+- Backend and API documentation: https://joefriends-backend-sigma-mission-9.vercel.app/
+- Frontend: https://joefriends-frontend-sigma-mission-9.vercel.app/
+- Frontend repository: https://github.com/joe-ship-it-nice/Joefriends-frontend-sigma-mission-9
 
 The backend homepage contains full API documentation, request examples,
 privacy rules, error responses, and a public-posts preview.
